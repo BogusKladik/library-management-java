@@ -1,5 +1,3 @@
-package src;
-
 public class Book {
     private final String isbn;
     private final String title;

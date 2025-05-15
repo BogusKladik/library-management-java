@@ -1,7 +1,8 @@
-package src;
-
 import java.util.List;
 import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Задача:
@@ -13,10 +14,12 @@ import java.util.Scanner;
  * 4) Показать сообщение об ошибке, если книга не найдена.
  */
 public class LibraryApp {
+    private static final Logger log = LoggerFactory.getLogger(LibraryApp.class);
     private static final Scanner scanner = new Scanner(System.in);
     private static final Library library = new Library();
 
     public static void main(String[] args) {
+        log.info("start app LibraryApp");
         library.addBook(new Book("978-0134685991", "Effective Java", "Joshua Bloch"));
         library.addBook(new Book("978-0201633610", "Design Patterns", "Gamma, Helm, Johnson, Vlissides"));
 
@@ -92,7 +95,7 @@ public class LibraryApp {
             System.out.println("Книги автора " + author + " не найдены.");
         } else {
             System.out.println("Найденные книги:");
-            books.forEach(System.out::println);
+            books.forEach(book -> System.out.println(book));
         }
     }
 
@@ -102,7 +105,7 @@ public class LibraryApp {
             System.out.println("Каталог пуст.");
         } else {
             System.out.println("Список всех книг:");
-            books.forEach(System.out::println);
+            books.forEach(book -> System.out.println(book));
         }
     }
 
