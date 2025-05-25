@@ -1,5 +1,4 @@
 import java.util.List;
-import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,18 +14,28 @@ import org.slf4j.LoggerFactory;
  */
 public class LibraryApp {
     private static final Logger log = LoggerFactory.getLogger(LibraryApp.class);
-    private static final Scanner scanner = new Scanner(System.in);
-    private static final Library library = new Library();
+
+    private final Console console;
+    private final Library library;
+
+    public LibraryApp(Library library, Console console) {
+        this.library = library;
+        this.console = console;
+    }
 
     public static void main(String[] args) {
         log.info("start app LibraryApp");
-        library.addBook(new Book("978-0134685991", "Effective Java", "Joshua Bloch"));
-        library.addBook(new Book("978-0201633610", "Design Patterns", "Gamma, Helm, Johnson, Vlissides"));
+        Library lib = new Library();
+        lib.addBook(new Book("978-0134685991", "Effective Java", "Joshua Bloch"));
+        lib.addBook(new Book("978-0201633610", "Design Patterns", "Gamma, Helm, Johnson, Vlissides"));
+        new LibraryApp(lib, new SystemConsole()).run();
+    }
 
+    public void run() {
         boolean running = true;
         while (running) {
             printMenu();
-            String choice = scanner.nextLine().trim();
+            String choice = console.readLine().trim();
             switch (choice) {
                 case "1":
                     addBook();
@@ -45,78 +54,82 @@ public class LibraryApp {
                     break;
                 case "0":
                     running = false;
-                    System.out.println("Выход. До свидания!");
+                    console.println("Выход. До свидания!");
                     break;
                 default:
-                    System.out.println("Неверный выбор. Попробуйте снова.");
+                    console.println("Неверный выбор. Попробуйте снова.");
             }
-            System.out.println();
+            console.println("");
         }
     }
 
-    private static void printMenu() {
-        System.out.println("=== Меню библиотеки ===");
-        System.out.println("1. Добавить книгу");
-        System.out.println("2. Найти книгу по ISBN");
-        System.out.println("3. Найти книги по автору");
-        System.out.println("4. Показать все книги");
-        System.out.println("5. Удалить книгу по ISBN");
-        System.out.println("0. Выход");
-        System.out.print("Выберите действие: ");
+    private void printMenu() {
+        console.println("=== Меню библиотеки ===");
+        console.println("1. Добавить книгу");
+        console.println("2. Найти книгу по ISBN");
+        console.println("3. Найти книги по автору");
+        console.println("4. Показать все книги");
+        console.println("5. Удалить книгу по ISBN");
+        console.println("0. Выход");
+        console.print("Выберите действие: ");
     }
 
-    private static void addBook() {
-        System.out.print("ISBN: ");
-        String isbn = scanner.nextLine().trim();
-        System.out.print("Название: ");
-        String title = scanner.nextLine().trim();
-        System.out.print("Автор: ");
-        String author = scanner.nextLine().trim();
+    private void addBook() {
+        console.print("ISBN: ");
+        String isbn = console.readLine().trim();
+        console.print("Название: ");
+        String title = console.readLine().trim();
+        console.print("Автор: ");
+        String author = console.readLine().trim();
         library.addBook(new Book(isbn, title, author));
-        System.out.println("Книга добавлена.");
+        console.println("Книга добавлена.");
     }
 
-    private static void searchByIsbn() {
-        System.out.print("Введите ISBN: ");
-        String isbn = scanner.nextLine().trim();
+    private void searchByIsbn() {
+        console.print("Введите ISBN: ");
+        String isbn = console.readLine().trim();
         try {
             Book book = library.findBookByIsbn(isbn);
-            System.out.println("Найдена книга: " + book);
-        } catch (BookNotFoundException e) {
-            System.out.println(e.getMessage());
+            console.println("Найдена книга: " + book);
+        } catch (Exception e) {
+            console.println(e.getMessage());
         }
     }
 
-    private static void searchByAuthor() {
-        System.out.print("Введите имя автора: ");
-        String author = scanner.nextLine().trim();
+    private void searchByAuthor() {
+        console.print("Введите имя автора: ");
+        String author = console.readLine().trim();
         List<Book> books = library.findBooksByAuthor(author);
         if (books.isEmpty()) {
-            System.out.println("Книги автора " + author + " не найдены.");
+            console.println("Книги автора " + author + " не найдены.");
         } else {
-            System.out.println("Найденные книги:");
-            books.forEach(book -> System.out.println(book));
+            console.println("Найденные книги:");
+            for (Book book : books) {
+                console.println(book.toString());
+            }
         }
     }
 
-    private static void listBooks() {
+    private void listBooks() {
         List<Book> books = library.listAllBooks();
         if (books.isEmpty()) {
-            System.out.println("Каталог пуст.");
+            console.println("Каталог пуст.");
         } else {
-            System.out.println("Список всех книг:");
-            books.forEach(book -> System.out.println(book));
+            console.println("Список всех книг:");
+            for (Book book : books) {
+                console.println(book.toString());
+            }
         }
     }
 
-    private static void removeBook() {
-        System.out.print("Введите ISBN для удаления: ");
-        String isbn = scanner.nextLine().trim();
+    private void removeBook() {
+        console.print("Введите ISBN для удаления: ");
+        String isbn = console.readLine().trim();
         try {
             library.removeBook(isbn);
-            System.out.println("Книга удалена.");
-        } catch (BookNotFoundException e) {
-            System.out.println(e.getMessage());
+            console.println("Книга удалена.");
+        } catch (Exception e) {
+            console.println(e.getMessage());
         }
     }
 }
