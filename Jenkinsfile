@@ -10,15 +10,15 @@ pipeline {
 
     stage('Compile') {
       steps {
-        sh 'mvn clean compile'
-        sh 'mvn test-compile'
+        sh 'mvn clean compile -B'
+        sh 'mvn test-compile -B'
       }
     }
 
     stage('Test') {
       when { branch 'feature/*' }
       steps {
-        sh 'mvn verify'
+        sh 'mvn verify -B'
       }
       post {
         always {
@@ -38,14 +38,14 @@ pipeline {
     stage('Static Analysis') {
       when { branch 'develop' }
       steps {
-        sh 'mvn pmd:check'
+        sh 'mvn pmd:check -B'
       }
     }
 
     stage('Install') {
       when { branch 'develop' }
       steps {
-        sh 'mvn install -DskipTests'
+        sh 'mvn install -DskipTests -B'
       }
       post {
         success {
@@ -56,7 +56,7 @@ pipeline {
 
     stage('Package App') {
       steps {
-        sh 'mvn package -DskipTests'
+        sh 'mvn package -DskipTests -B'
       }
       post {
         success {
