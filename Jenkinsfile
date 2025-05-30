@@ -35,13 +35,6 @@ pipeline {
       }
     }
 
-    stage('Static Analysis') {
-      when { branch 'develop' }
-      steps {
-        sh 'mvn pmd:check -B'
-      }
-    }
-
     stage('Install') {
       when { branch 'develop' }
       steps {
@@ -51,6 +44,13 @@ pipeline {
         success {
           echo 'Installed to local repo'
         }
+      }
+    }
+
+    stage('Static Analysis') {
+      when { branch 'develop' }
+      steps {
+        sh 'mvn pmd:check -B'
       }
     }
 
