@@ -40,4 +40,8 @@ public class Book {
     public int hashCode() {
         return isbn.hashCode();
     }
+
+    public boolean fantastic() {
+        return title == "Фантастика" ? true : false;
+    }
 }
